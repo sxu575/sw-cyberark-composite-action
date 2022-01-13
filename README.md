@@ -1,1 +1,1 @@
-# -sw-cyberark-composite-action
+# sw-cyberark-composite-action
