@@ -1,0 +1,50 @@
+name: CyberArk Action
+description: Composite action for CyberArk 
+author: DA Team <da.team@sherwin.com>
+
+inputs: 
+  certificate:
+    required: true
+    description: Provide the orca config id for Qualys
+    
+  CCP_AppID:
+    required: true
+    description: Provide Orca API KEY
+    
+  SafeName:
+    required: true
+    description: Provide Safe Name
+  
+  UserName:
+    required: true
+    default: 'REST_Salesforce-Jenkins'
+    
+  request_timeout: 
+    required: false
+    default: 20000
+    description: Provide the http requst timeout. Defaults to 20s
+   
+outputs:
+  rest_user_pass: 
+     description: REST USER PASSWORD
+     value: ${{ steps.post.outputs.response }}
+runs:
+  using: "composite"
+  steps: 
+  
+    - name: Orca HTTP Request Action
+      id: post
+      uses: fjogeleit/http-request-action@v1.8.1
+      with:
+        url: 'https://ccp.sherwin.com/AIMWebService/API/Accounts?AppID=${inputs.CCP_AppID}&safe=${inputs.SafeName}&username=${inputs.UserName}'
+        method: 'GET'
+        bearerToken: ${{ inputs.orca_api_key }}
+        timeout: ${{ inputs.request_timeout }}
+        
+#     - name: Show Response
+#       run: echo ${{ steps.post.outputs.response }}
+#       shell: bash
+      
+branding:
+  icon: git-branch
+  color: white
